@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3 uid="uid://dev00orf1by57"]
+
+[ext_resource type="Script" path="res://scripts/third_person_camera/CamPivot.gd" id="1_0sxb4"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_sea17"]
+
+[sub_resource type="GDScript" id="GDScript_c6cos"]
+script/source = "extends Camera3D
+
+@export var nav: NavigationAgent3D
+
+func _input(event):
+	if event.is_action_pressed('lmb'):
+
+		var screen_point = get_viewport().get_mouse_position()
+		var normal = project_ray_normal(screen_point)
+		var from = project_ray_origin(screen_point)
+		var to = from + normal * 1000000000000000
+		
+		print(to)
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	pass
+"
+
+[node name="ThirdPersonCamera" type="Node3D"]
+
+[node name="SpringArm3D" type="SpringArm3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
+shape = SubResource("SphereShape3D_sea17")
+spring_length = 5.0
+script = ExtResource("1_0sxb4")
+rotation_speed = 0.3
+zoom_speed = 10.0
+
+[node name="Camera3D" type="Camera3D" parent="SpringArm3D" node_paths=PackedStringArray("nav")]
+h_offset = 0.5
+current = true
+script = SubResource("GDScript_c6cos")
+nav = NodePath("../../NavigationAgent3D")

@@ -1,0 +1,104 @@
+[gd_scene load_steps=14 format=3 uid="uid://c85e3rbmhd2qq"]
+
+[ext_resource type="Script" path="res://scripts/PlayerController.gd" id="1_3avcs"]
+[ext_resource type="Script" path="res://PlayerInput.gd" id="2_ol003"]
+[ext_resource type="PackedScene" uid="uid://cohpusd0833y8" path="res://pointer.blend" id="2_uw236"]
+[ext_resource type="PackedScene" uid="uid://dev00orf1by57" path="res://scenes/ThirdPersonCamera.tscn" id="3_jrn8n"]
+
+[sub_resource type="HeightMapShape3D" id="7"]
+map_width = 3
+map_depth = 3
+map_data = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="PlaneMesh" id="2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mlpri"]
+albedo_color = Color(0.380392, 0.380392, 0.380392, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gjxns"]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_wfe10"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r8jg4"]
+sun_angle_max = 2.44
+sun_curve = 1.69706
+
+[sub_resource type="Sky" id="Sky_hl48o"]
+sky_material = SubResource("ProceduralSkyMaterial_r8jg4")
+
+[sub_resource type="Environment" id="9"]
+background_mode = 2
+sky = SubResource("Sky_hl48o")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+reflected_light_source = 2
+ssao_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.005
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_a2fay"]
+
+[node name="MainScene" type="Node3D"]
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Ground" type="StaticBody3D" parent="World"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Ground"]
+transform = Transform3D(52.6503, 0, 0, 0, 1, 0, 0, 0, 52.6503, 0, 0, 0)
+shape = SubResource("7")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="World/Ground/CollisionShape3D"]
+mesh = SubResource("2")
+material = SubResource("StandardMaterial3D_mlpri")
+
+[node name="Obstacle" type="MeshInstance3D" parent="World"]
+transform = Transform3D(3.01448, 0, 0.959151, 0, 1, 0, -10.2206, 0, 0.282894, -4.83181, 0.118117, 10.3358)
+mesh = SubResource("BoxMesh_gjxns")
+skeleton = NodePath("")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/Obstacle"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Obstacle/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_wfe10")
+
+[node name="Obstacles2" type="MeshInstance3D" parent="World"]
+transform = Transform3D(10.1903, 0.214479, -0.198667, -2.33195, 0.97576, -3.72529e-09, 2.06565, 0.0434765, 0.980067, -10.6964, 1.83896, 5.43009)
+mesh = SubResource("BoxMesh_gjxns")
+skeleton = NodePath("")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World/Obstacles2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Obstacles2/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_wfe10")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("9")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.575005, 0.693072, 0.434764, 0, -0.531399, 0.847122, 0.81815, -0.4871, -0.305557, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Player" type="CharacterBody3D" parent="."]
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+script = ExtResource("1_3avcs")
+
+[node name="Input" type="Node" parent="Player"]
+script = ExtResource("2_ol003")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="Player"]
+avoidance_enabled = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_a2fay")
+
+[node name="pointer" parent="Player/CollisionShape3D" instance=ExtResource("2_uw236")]
+
+[node name="ThirdPersonCamera" parent="Player" instance=ExtResource("3_jrn8n")]
+
+[connection signal="renamed" from="." to="Player" method="_on_main_scene_renamed"]
+[connection signal="jump_requested" from="Player/Input" to="Player" method="_on_input_jump_requested"]
+[connection signal="move_direction_changed" from="Player/Input" to="Player" method="_on_input_move_direction_changed"]
